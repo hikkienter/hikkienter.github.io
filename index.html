@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ЕГЭ — Ударения</title>
+
+<style>
+*{
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    margin:0;
+    min-height:100vh;
+    background:
+        radial-gradient(#000 1px, transparent 1px);
+    background-size:22px 22px;
+}
+
+.page{
+    display:none;
+    min-height:100vh;
+    padding:40px;
+}
+
+.page.active{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+}
+
+/* ===== МЕНЮ ===== */
+.menu-wrapper{
+    width:1000px;
+    display:flex;
+    gap:30px;
+}
+
+.menu-left{
+    width:220px;
+    background:#fff;
+    border:2px solid #000;
+    border-radius:16px;
+    padding:20px;
+}
+
+.menu-item{
+    border:2px solid #aaa;
+    border-radius:12px;
+    padding:14px;
+    margin-bottom:14px;
+    text-align:center;
+}
+
+.menu-item.active{
+    border-color:#000;
+    font-weight:bold;
+}
+
+.menu-item.disabled{
+    opacity:0.4;
+}
+
+.menu-center{
+    flex:1;
+    background:#fff;
+    border:2px solid #000;
+    border-radius:16px;
+    padding:30px;
+}
+
+.start-btn{
+    margin-top:20px;
+    padding:14px 28px;
+    font-size:18px;
+    cursor:pointer;
+}
+
+/* ===== ИГРА ===== */
+.game-wrapper{
+    width:1000px;
+    background:#fff;
+    border:2px solid #000;
+    border-radius:18px;
+    padding:30px;
+    position:relative;
+    display:flex;
+    gap:20px;
+}
+
+.back-btn{
+    position:absolute;
+    top:15px;
+    left:15px;
+    cursor:pointer;
+    font-weight:bold;
+}
+
+.stats{
+    width:200px;
+    border-right:2px solid #000;
+    padding-right:20px;
+}
+
+.cards{
+    flex:1;
+    display:flex;
+    flex-direction:column;
+    gap:14px;
+}
+
+.card{
+    border:2px solid #000;
+    border-radius:14px;
+    padding:20px;
+    font-size:22px;
+    text-align:center;
+    cursor:pointer;
+    min-height:80px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    word-break:break-word;
+}
+
+/* ===== ПОДСВЕТКА ===== */
+.card.correct{
+    background:#8FE39A;
+    border-color:#1B5E20;
+}
+
+.card.wrong{
+    background:#F28B8B;
+    border-color:#B71C1C;
+}
+</style>
+</head>
+
+<body>
+
+<!-- МЕНЮ -->
+<div class="page active" id="menuPage">
+    <div class="menu-wrapper">
+        <div class="menu-left">
+            <div class="menu-item active">Ударения</div>
+            <div class="menu-item disabled">Паронимы</div>
+            <div class="menu-item disabled">Орфоэпия</div>
+        </div>
+
+        <div class="menu-center">
+            <h2>Изучение ударений в словах</h2>
+            <p>
+                Этот сайт предназначен для изучения и закрепления
+                правильной постановки ударений в словах,
+                которые встречаются в заданиях ЕГЭ по русскому языку.
+            </p>
+            <p>
+                Формат заданий соответствует экзаменационному:
+                вам предлагаются варианты слов с разным ударением,
+                из которых необходимо выбрать правильный.
+            </p>
+            <p>
+                После каждого выбора сразу показывается результат,
+                затем появляется следующее слово.
+            </p>
+            <button class="start-btn" onclick="startGame()">Начать</button>
+        </div>
+    </div>
+</div>
+
+<!-- ИГРА -->
+<div class="page" id="gamePage">
+    <div class="game-wrapper">
+        <div class="back-btn" onclick="goMenu()">Назад</div>
+
+        <div class="stats">
+            <h3>Процент<br>правильных</h3>
+            <div id="percent">0%</div>
+        </div>
+
+        <div class="cards" id="cards"></div>
+    </div>
+</div>
+
+<script>
+const words = [
+   /* ГЛАГОЛЫ */
+["назвалАсь","назвАлась"],
+["накренИтся","накрЕнится"],
+["налилА","налИла"],
+["нарвалА","нарвАла"],
+["начАть","нАчать"],
+["облегчИть","облЕгчить"],
+["облилАсь","облИлась"],
+["обнялАсь","обнЯлась"],
+["обогналА","обогнАла"],
+["ободралА","обОдрала"],
+["ободрИть","обОдрить"],
+["ободрИться","обОдри́ться"],
+["обострИть","обОстрить"],
+
+/* ПРИЧАСТИЯ */
+["довезЁнный","довЕзенный"],
+["зАгнутый","загнУтый"],
+["зАнятый","занЯтый"],
+["зАпертый","запЕртый"],
+["заселЁнный","засЕленный"],
+["кровоточАщий","кровотОчащий"],
+["нажИвший","нАживший"],
+["налИвший","нАливший"],
+["нанЯвшийся","нАнявшийся"],
+["начАвший","нАчавший"],
+["нАчатый","начАтый"],
+["низведЁнный","низвЕденный"],
+["облегчЁнный","облЕгченный"],
+["ободрЁнный","обОдренный"],
+["обострЁнный","обОстренный"],
+["отключЁнный","отклЮченный"],
+["повторЁнный","повтОрённый"],
+["поделЁнный","подЕленный"],
+["понЯвший","пОнявший"],
+["прИнятый","принЯтый"],
+["приручЁнный","прирУченный"],
+["прожИвший","прОживший"],
+["снятА","снЯта"],
+["сОгнутый","согнУтый"],
+["углублЁнный","углУбленный"],
+
+/* ДЕЕПРИЧАСТИЯ */
+["закУпорив","закупОрив"],
+["начАв","нАчав"],
+["начАвшись","нАчавшись"],
+["отдАв","Отдав"],
+["понЯв","пОняв"],
+["прибЫв","прИбыв"],
+["создАв","сОздав"],
+
+/* НАРЕЧИЯ */
+["вОвремя","воврЕмя"],
+["дОверху","довЕрху"],
+["дОнизу","донИзу"],
+["дОсуха","досУха"],
+["зАсветло","засвЕтло"],
+["красИвее","крАсивее"],
+["надОлго","нАдолго"],
+["ненадОлго","ненАдолго"]
+
+];
+
+let correct = 0;
+let total = 0;
+
+function startGame(){
+    document.getElementById("menuPage").classList.remove("active");
+    document.getElementById("gamePage").classList.add("active");
+    nextWord();
+}
+
+function goMenu(){
+    document.getElementById("gamePage").classList.remove("active");
+    document.getElementById("menuPage").classList.add("active");
+}
+
+function nextWord(){
+    const container = document.getElementById("cards");
+    container.innerHTML = "";
+
+    const pair = words[Math.floor(Math.random()*words.length)];
+    const options = [...pair].sort(()=>Math.random()-0.5);
+
+    options.forEach(word=>{
+        const div = document.createElement("div");
+        div.className = "card";
+        div.textContent = word;
+        div.onclick = ()=>{
+            total++;
+            if(word === pair[0]){
+                correct++;
+                div.classList.add("correct");
+            }else{
+                div.classList.add("wrong");
+            }
+            updateStats();
+            setTimeout(nextWord,700);
+        };
+        container.appendChild(div);
+    });
+}
+
+function updateStats(){
+    const p = Math.round((correct / total) * 100);
+    document.getElementById("percent").textContent = p + "%";
+}
+</script>
+
+</body>
+</html>
