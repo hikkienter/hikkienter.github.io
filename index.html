@@ -297,3 +297,61 @@ function updateStats(){
 
 </body>
 </html>
+
+/* ===== АДАПТАЦИЯ ПОД ТЕЛЕФОН ===== */
+@media (max-width: 768px){
+
+    .menu-wrapper{
+        flex-direction:column;
+        width:100%;
+    }
+
+    .menu-left{
+        width:100%;
+        display:flex;
+        gap:10px;
+        justify-content:center;
+    }
+
+    .menu-item{
+        flex:1;
+        margin-bottom:0;
+        font-size:14px;
+    }
+
+    .menu-center{
+        width:100%;
+        margin-top:20px;
+    }
+
+    .game-wrapper{
+        width:100%;
+        flex-direction:column;
+    }
+
+    .stats{
+        width:100%;
+        border-right:none;
+        border-bottom:2px solid #000;
+        padding-bottom:15px;
+        margin-bottom:15px;
+        text-align:center;
+    }
+
+    .cards{
+        width:100%;
+    }
+
+    .card{
+        font-size:20px;
+        min-height:70px;
+        padding:18px;
+    }
+
+    .back-btn{
+        position:static;
+        margin-bottom:15px;
+        display:block;
+        text-align:left;
+    }
+}
